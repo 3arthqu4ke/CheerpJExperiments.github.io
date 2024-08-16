@@ -19,8 +19,15 @@ import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 public class CheerpJExperiment {
     public static void main(String[] args) throws Exception {
         System.out.println("Hi!");
-        CheerpJGui gui = new CheerpJGui();
-        gui.init();
+        boolean noAwt = Boolean.parseBoolean(System.getProperty("noAwt", "false"));
+        System.out.println("NoAwt: " + noAwt);
+        CheerpJGui gui;
+        if (!noAwt) {
+            gui = new CheerpJGui();
+            gui.init();
+        } else {
+            gui = null;
+        }
 
         try (InputStream is = CheerpJExperiment.class.getClassLoader().getResourceAsStream("bib.class")) {
             assert is != null;
@@ -76,9 +83,11 @@ public class CheerpJExperiment {
             };
 
             String string = Base64.getEncoder().encodeToString(bytes);
-            SwingUtilities.invokeAndWait(() -> gui.displayArea.append("Base64:\n"));
-            SwingUtilities.invokeAndWait(() -> gui.displayArea.append(string + "\n"));
-            SwingUtilities.invokeAndWait(() -> gui.displayArea.append("Finished\n"));
+            if (!noAwt) {
+                SwingUtilities.invokeAndWait(() -> gui.displayArea.append("Base64:\n"));
+                SwingUtilities.invokeAndWait(() -> gui.displayArea.append(string + "\n"));
+                SwingUtilities.invokeAndWait(() -> gui.displayArea.append("Finished\n"));
+            }
             System.exit(0);
         } catch (Throwable t) {
             StringWriter sw = new StringWriter();
@@ -86,7 +95,9 @@ public class CheerpJExperiment {
             t.printStackTrace(pw);
             pw.println();
             pw.close();
-            SwingUtilities.invokeAndWait(() -> gui.displayArea.append(sw + "\n"));
+            if (!noAwt) {
+                SwingUtilities.invokeAndWait(() -> gui.displayArea.append(sw + "\n"));
+            }
         }
 
         System.out.println("Bye!");

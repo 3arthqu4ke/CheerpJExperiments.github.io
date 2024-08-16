@@ -25,6 +25,10 @@ repositories {
     mavenCentral()
 }
 
+run {
+    systemProperties['noAwt'] = 'true'
+}
+
 dependencies {
     implementation group: 'org.ow2.asm', name: 'asm', version: '9.7'
     implementation group: 'org.ow2.asm', name: 'asm-tree', version: '9.7'
