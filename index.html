@@ -8,7 +8,7 @@
 <body>
 <script>
   (async function () {
-    await cheerpjInit();
+    await cheerpjInit({ clipboardMode: "system" });
     cheerpjCreateDisplay(800, 600);
     await cheerpjRunJar("/app/CheerpJExperiments-1.0-SNAPSHOT-all.jar");
   })();
